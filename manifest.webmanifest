@@ -1,7 +1,7 @@
 {
-  "name": "Course d’orientation 6e",
+  "name": "Organisation course d’orientation",
   "short_name": "Orientation",
-  "description": "Évaluation mobile de course d’orientation par binômes",
+  "description": "Organisation mobile des évaluations de course d’orientation en 6e et en 3e",
   "lang": "fr",
   "start_url": "./index.html",
   "scope": "./",
