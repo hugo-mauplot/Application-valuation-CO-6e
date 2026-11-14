@@ -11,3 +11,6 @@ Pour les prochains changements : comparer la version distante à la référence 
 Tests automatisés locaux : fusion, terrain, changement de séance/rôle élève et lancement réussis ; syntaxe vérifiée. Les essais iPad/iPhone réels restent à effectuer. Aucune modification Supabase requise par ces fichiers.
 
 La sauvegarde JSON de l’application n’inclut pas les cartes PDF ni les accès de connexion partagée ; préserver séparément ces éléments. Git conserve le code, pas les données d’utilisation des appareils.
+
+
+14.18 : la case de lancement et le choix du matériel sont placés juste au-dessus du Tableau général des attributions. Fonctionnement identique à 14.17 ; cache v9.
