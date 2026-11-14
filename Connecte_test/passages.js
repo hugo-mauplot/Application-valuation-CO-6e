@@ -5,6 +5,7 @@ function passageParticipant(){return state.pairs.find(p=>p.id===studentPairId)}
 function passageEvent(command,beacon,code){const p=passageParticipant();if(!p)return;const x=passageCore.prepare(state,p);return{kind:'visit',command,pair:p.id,course:p.courseId,visitRun:x.run,beacon,code}}
 function passageSend(event){
  if(!event)return;
+ const participant=state.pairs.find(p=>p.id===event.pair);if(participant&&rejectLateValidation(participant))return;
  if(co?.role==='student'){coQueue(event);return}
  try{const response=passageCore.transition(state,{...event,event:crypto.randomUUID()},new Date().toISOString());state=response.profile;app.profiles[stateMode]=state;save();passageFeedback(event,response)}catch(error){toast(error.message)}
 }

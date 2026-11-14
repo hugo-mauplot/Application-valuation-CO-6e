@@ -58,7 +58,7 @@ begin
   if request->>'course' is distinct from p->>'courseId' then raise exception 'Parcours modifié';end if;
   duration:=coalesce((case when doc#>>'{settings,gradeFormat}'='third' then doc#>>'{settings,third,duration}' else doc#>>'{settings,duration}' end)::numeric,40);
   elapsed:=extract(epoch from(now()-(p->>'startAt')::timestamptz))*1000-coalesce((p->>'teacherPausedMs')::numeric,0);
-  if command in ('answer','skip','continue') and elapsed>=duration*60000 then raise exception 'Temps réglementaire dépassé';end if;
+  if elapsed>=duration*60000 then raise exception 'Temps réglementaire dépassé';end if;
   p:=co_private.visit_prepare(doc,p);plan:=p->'visitState';v:=plan->'visit';cap:=coalesce((doc#>>'{settings,maxBeaconsPerVisit}')::int,1);
   if request->>'visitRun' is distinct from plan->>'run' or plan->>'run' is null then raise exception 'Passage modifié : rechargez la carte';end if;
   select value into last_attempt from jsonb_array_elements(coalesce(doc->'attempts','[]')) where value->>'id'=v->>'pending' and value->>'pairId'=p->>'id';
