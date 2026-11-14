@@ -13,10 +13,21 @@ function coApply(doc,ops){doc=coClone(doc);for(let op of ops){if(op.id){let a=do
 async function coRpc(data,connection=co){let controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);try{let response=await fetch(CO_ENDPOINT,{method:'POST',headers:{apikey:CO_PUBLIC_KEY,'Content-Type':'application/json'},body:JSON.stringify({request:{...data,session:connection.session,token:connection.token,device:connection.device,deviceName:connection.deviceName}}),signal:controller.signal,cache:'no-store'});let body=await response.json();if(!response.ok)throw Error(body.message||'Connexion refusée');return body}finally{clearTimeout(timer)}}
 function coInstall(response,lateOps=[]){let filter=state.studentCourseFilter||'',retained=state.lastSessionResults,teacherTerrainActive=state.terrainModeActive,tabletSetupPending=state.tabletSetupPending;state=coApply(response.profile,lateOps);state.settings=state.settings||{};if(co.role==='student'){state.studentTerrain=true;state.studentCourseFilter=(state.courses||[]).some(c=>c.id===filter)?filter:'';delete state.settings.teacherPin;state.terrainModeActive=!!response.profile.sessionStartedAt}else{state.studentTerrain=false;state.tabletSetupPending=!!state.sessionStartedAt&&!!tabletSetupPending;state.terrainModeActive=!!state.sessionStartedAt&&!!teacherTerrainActive;if(retained)state.lastSessionResults=retained}app.activeMode=response.mode;stateMode=response.mode;app.profiles[stateMode]=state;coBaseline=coClean(response.profile);coApplying=true;try{coLocalSave(false)}finally{coApplying=false}coLast=Date.now();coError='';coRenderStatus(response.devices);}
 function coRenderStatus(devices){let el=document.querySelector('#coStatus');if(!el)return;el.textContent=!co?'Mode local indépendant':coError?'⚠ '+coError:co.outbox?.length?'En attente : '+co.outbox.length+' action(s)':'Synchronisé · '+(co.role==='teacher'?'Centre enseignant':'Borne élève');if(co?.role==='teacher'&&devices){document.querySelector('#coDevices').textContent=devices.map(d=>d.name+' : '+(Date.now()-new Date(d.seenAt)<15000?'connectée':'sans nouvelles')).join(' · ')}}
+function coCanShareCurrentSession(){
+ return co?.role==='teacher'&&!!state.sessionStartedAt&&state.studentTabletsEnabled===true&&co.startedAt===state.sessionStartedAt&&(!co.mode||co.mode===app.activeMode)&&!!co.studentToken;
+}
+function coRefreshShareButton(){
+ const button=document.querySelector('#coShare');if(button)button.hidden=!coCanShareCurrentSession();
+ if(!coCanShareCurrentSession()){
+  const dialog=document.querySelector('#coInvitationDialog');if(dialog?.open)dialog.close();
+  const link=document.querySelector('#coInvitation');if(link)link.value='';
+  const canvas=document.querySelector('#coInvitationQR');if(canvas)canvas.hidden=true;
+ }
+}
 function coUpdateToolbar(){
  const student=co?.role==='student';
  document.querySelector('#coCreate').hidden=true;document.querySelector('#coJoin').hidden=true;
- document.querySelector('#coShare').hidden=student||!co||co.role!=='teacher'||!state.studentTabletsEnabled;
+ coRefreshShareButton();
  document.querySelector('#coLeave').hidden=true;
  coRenderStatus();coRenderLaunchChoices();
 }
@@ -51,6 +62,7 @@ async function coTick(){
 }
 save=function(recordUndo=true){coLocalSave(recordUndo);if(co?.role==='teacher'&&!coApplying){co.pendingOps=coBaseline?coDiff(coBaseline,coClean(state)):(co.pendingOps||[]);coPersist();coTick()}};
 function coRenderLaunchChoices(){
+ coRefreshShareButton();
  const students=document.querySelector('#sessionDevicesStudents'),teacher=document.querySelector('#sessionDevicesTeacher');
  if(!students||!teacher)return;
  const shared=state.studentTabletsEnabled??(co?.role==='teacher');
@@ -86,7 +98,7 @@ async function coLaunchSession(forced=false){
  }
  if(existingStart&&co?.role==='teacher'&&co.startedAt===existingStart)return coShare();
  coLaunching=true;coError='';coRenderLaunchChoices();
- const candidate={session:crypto.randomUUID(),token:coSecret(),studentToken:coSecret(),device:crypto.randomUUID(),deviceName:'Tablette enseignant',role:'teacher',outbox:[],startedAt:existingStart||new Date().toISOString()};
+ const candidate={session:crypto.randomUUID(),token:coSecret(),studentToken:coSecret(),device:crypto.randomUUID(),deviceName:'Tablette enseignant',role:'teacher',mode:app.activeMode,outbox:[],startedAt:existingStart||new Date().toISOString()};
  try{
   const profile=coClean(state);profile.sessionStartedAt=candidate.startedAt;profile.studentTabletsEnabled=true;profile.sessionStartForced=forced;profile.terrainModeActive=true;delete profile.lastSessionResults;
   const response=await coRpc({action:'create',studentToken:candidate.studentToken,profile,mode:app.activeMode},candidate);
@@ -94,7 +106,7 @@ async function coLaunchSession(forced=false){
   if(co)localStorage.setItem('co-last-teacher-connection',JSON.stringify(co));
   co=candidate;coBaseline=null;coPersist();
   delete state.lastSessionResults;state.tabletSetupPending=true;state.terrainModeActive=false;
-  coInstall(response);activateView('pairs');coShare();
+  coInstall(response);activateView('pairs');await coShare();
  }catch(error){coError='Connexion impossible : '+error.message;toast(coError)}
  finally{coLaunching=false;coUpdateToolbar()}
 }
@@ -108,7 +120,21 @@ toggleSessionStart=function(){
 const coOriginalRender=render;
 render=function(){coOriginalRender();coRenderLaunchChoices()};
 function coDrawInvitationQR(value){let canvas=document.querySelector('#coInvitationQR');try{let qr=new window.COQRCode(-1,window.COQRErrorLevel.M);qr.addData(value);qr.make();let count=qr.getModuleCount(),unit=8,quiet=4;canvas.width=canvas.height=(count+quiet*2)*unit;let context=canvas.getContext('2d');context.fillStyle='#fff';context.fillRect(0,0,canvas.width,canvas.height);context.fillStyle='#000';for(let r=0;r<count;r++)for(let c=0;c<count;c++)if(qr.isDark(r,c))context.fillRect((c+quiet)*unit,(r+quiet)*unit,unit,unit);canvas.hidden=false}catch(error){canvas.hidden=true;toast('QR indisponible : utilisez le lien à copier');console.error(error)}}
-function coShare(){let url=new URL(location.href);url.hash='co='+encodeURIComponent(co.session+'.'+co.studentToken);let el=document.querySelector('#coInvitation');el.value=url.href;coDrawInvitationQR(url.href);let dialog=document.querySelector('#coInvitationDialog');if(!dialog.open)dialog.showModal()}
+async function coShare(){
+ if(!coCanShareCurrentSession()){coRefreshShareButton();return toast('Lancez d’abord la séance actuelle avec les tablettes élèves.')}
+ const connection=co,startedAt=state.sessionStartedAt,mode=app.activeMode;
+ const dialog=document.querySelector('#coInvitationDialog'),link=document.querySelector('#coInvitation'),canvas=document.querySelector('#coInvitationQR');
+ // Aucun ancien lien n'est visible pendant la vérification du partage.
+ if(dialog.open)dialog.close();link.value='';canvas.hidden=true;
+ try{
+  const response=await coRpc({action:'read'},connection);
+  if(co!==connection||state.sessionStartedAt!==startedAt||app.activeMode!==mode||!coCanShareCurrentSession())return;
+  if(response.mode!==mode||response.profile?.sessionStartedAt!==startedAt)return toast('Ce partage ne correspond plus à la séance actuelle. Aucun QR code affiché.');
+  let url=new URL(location.href);url.hash='co='+encodeURIComponent(connection.session+'.'+connection.studentToken);
+  link.value=url.href;coDrawInvitationQR(url.href);dialog.showModal();
+ }catch(error){toast('Impossible de vérifier le QR de cette séance : '+error.message)}
+}
+
 async function coJoin(invitation){
  if(coJoining)return;
  if(co?.role==='teacher')return toast('Cette tablette est le centre enseignant. Ouvrez le QR code sur une borne élève.');
