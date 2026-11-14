@@ -12,8 +12,8 @@ begin
   and not exists(select 1 from jsonb_array_elements(coalesce(doc->'attempts','[]')) aa where aa->>'pairId'=p->>'id' and aa->>'beaconId'=bb.value->>'id' and coalesce((aa->>'found')::boolean,false))
   order by case when c->>'orderMode'='imposed' then coalesce((select ordinality::int from jsonb_array_elements_text(order_values) with ordinality oo where oo.value=coalesce(bb.value->>'courseNumber',bb.value->>'number')),1001+coalesce((bb.value->>'courseNumber')::int,(bb.value->>'number')::int,0)) else 1001+coalesce((bb.value->>'courseNumber')::int,(bb.value->>'number')::int,0) end,bb.value->>'id'
  loop ids:=ids||jsonb_build_array(b->>'id'); end loop;
- if plan is null or plan->>'version' is distinct from '1' or plan->>'session' is distinct from doc->>'sessionStartedAt' or plan->>'course' is distinct from coalesce(p->>'courseId','') then
-  plan:=jsonb_build_object('version',1,'session',doc->>'sessionStartedAt','course',coalesce(p->>'courseId',''),'run',null,'queue',ids,'assigned','[]'::jsonb,'visit',jsonb_build_object('touched','[]'::jsonb,'pending',null,'id',null));
+ if plan is null or plan->>'version' is distinct from '1' or plan->>'session' is distinct from doc->>'sessionStartedAt' or plan->>'start' is distinct from p->>'startAt' or plan->>'course' is distinct from coalesce(p->>'courseId','') then
+  plan:=jsonb_build_object('version',1,'session',doc->>'sessionStartedAt','start',p->>'startAt','course',coalesce(p->>'courseId',''),'run',null,'queue',ids,'assigned','[]'::jsonb,'visit',jsonb_build_object('touched','[]'::jsonb,'pending',null,'id',null));
  end if;
  select value->>'id' into run_id from jsonb_array_elements(coalesce(p->'runs','[]')) with ordinality rr where value->>'endAt' is null order by ordinality desc limit 1;
  if run_id is not null and plan->>'run' is distinct from run_id then

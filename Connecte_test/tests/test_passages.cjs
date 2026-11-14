@@ -15,6 +15,8 @@ d=fixture(2,3);C.sync(d);d=send(d,'answer','b1','001');d=send(d,'continue');d=se
 d=fixture(0,30);C.sync(d);assert.equal(C.batch(d,d.pairs[0]).length,30);for(let i=1;i<=30;i++){d=send(d,'answer','b'+i,'00'+i);if(i<30)d=send(d,'continue')}d=send(d,'depart');assert.equal(C.batch(d,d.pairs[0]).length,0);
 d=fixture(3,7,false);C.sync(d);d=send(d,'answer','b7','007');assert.equal(d.attempts[0].found,true);d.pairs[0].teacherPausedAt='pause';assert.throws(()=>send(d,'depart'),/pause/);
 assert.equal(C.maximum({settings:{}}),1);assert.equal(C.enabled({settings:{}}),false,'1 conserve le parcours historique');
+// Un nouveau départ d’épreuve après remise à zéro repart du début du parcours.
+d=fixture(2,5);C.sync(d);d=send(d,'answer','b1','001');d=send(d,'depart');d.attempts=[];d.pairs[0].startAt='new-start';d.pairs[0].runs=[{id:'new-run',startAt:'new-start',endAt:null}];C.sync(d);assert.deepEqual(C.batch(d,d.pairs[0]).map(b=>b.id),['b1','b2']);
 // Contrôle aléatoire : jamais de réussite proposée de nouveau, lot <= maximum, terminaison.
 for(let n=2;n<=8;n++){let x=fixture(n,17);C.sync(x);let loops=0;while(C.remaining(x,x.pairs[0]).length&&loops++<30){const batch=C.batch(x,x.pairs[0]);assert.ok(batch.length<=n);for(let i=0;i<batch.length;i++){const b=batch[i];x=send(x,'answer',b.id,'00'+b.courseNumber);if(i+1<batch.length)x=send(x,'continue')}x=send(x,'depart');const good=new Set(x.attempts.filter(a=>a.found).map(a=>a.beaconId));assert.ok(C.batch(x,x.pairs[0]).every(b=>!good.has(b.id)))}assert.equal(C.remaining(x,x.pairs[0]).length,0)}
 console.log('OK : lots 2–8, maximum, départ anticipé, erreurs/report/retentative au prochain lot uniquement, zéros initiaux, Libre 30, ordre libre, pauses, retour groupé et exclusion des réussites.');

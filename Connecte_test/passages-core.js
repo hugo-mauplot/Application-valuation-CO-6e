@@ -7,11 +7,11 @@ function enabled(doc){return maximum(doc)!==1}
 function remaining(doc,p){const good=new Set((doc.attempts||[]).filter(a=>a.pairId===p.id&&a.found).map(a=>a.beaconId));return(doc.beacons||[]).filter(b=>(p.courseId?b.courseId===p.courseId:(p.freeBeaconIds||[]).includes(b.id))&&!good.has(b.id))}
 function course(doc,p){return(doc.courses||[]).find(c=>c.id===String(p.courseId).split('::')[0])}
 function ordered(doc,p){const c=course(doc,p),order=c?.variantOrders?.[String(p.courseId).split('::')[1]]||[];return remaining(doc,p).sort((a,b)=>{const rank=b=>{const n=Number(b.courseNumber||b.number),i=order.indexOf(n);return c?.orderMode==='imposed'&&i>=0?i:n+1000};return rank(a)-rank(b)||String(a.id).localeCompare(String(b.id))})}
-function validPlan(doc,p){const x=p.visitState;return x?.version===1&&x.session===doc.sessionStartedAt&&x.course===(p.courseId||'')}
+function validPlan(doc,p){const x=p.visitState;return x?.version===1&&x.session===doc.sessionStartedAt&&x.start===p.startAt&&x.course===(p.courseId||'')}
 function prepare(doc,p){
  const list=ordered(doc,p),ids=list.map(b=>b.id),open=(p.runs||[]).findLast?.(r=>!r.endAt)||(p.runs||[]).slice().reverse().find(r=>!r.endAt);
  let x=validPlan(doc,p)?p.visitState:null;
- if(!x)x={version:1,session:doc.sessionStartedAt,course:p.courseId||'',run:null,queue:ids,assigned:[],visit:{touched:[],pending:null,id:null}};
+ if(!x)x={version:1,session:doc.sessionStartedAt,start:p.startAt,course:p.courseId||'',run:null,queue:ids,assigned:[],visit:{touched:[],pending:null,id:null}};
  if(open&&x.run!==open.id){
   const good=new Set(ids);let queue=[...new Set([...(x.queue||[]),...ids])].filter(id=>good.has(id));if(x.run){const assigned=new Set(x.assigned);queue=[...queue.filter(id=>!assigned.has(id)),...x.assigned.filter(id=>good.has(id))];}
   if(x.priority&&good.has(x.priority))queue=[x.priority,...queue.filter(id=>id!==x.priority)];
