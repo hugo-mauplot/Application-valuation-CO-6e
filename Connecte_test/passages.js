@@ -71,10 +71,27 @@ coFeedback=function(event,response){
  $('#studentMore').hidden=true;$('#studentRetry').textContent='Retenter';return passageOldFeedback(event,response);
 };
 $('#studentMore').onclick=()=>passageSend(passageEvent('continue'));
+let passageLastLimit=passageCore.maximum(state)||1;
+function passageRenderLimit(){
+ const max=passageCore.maximum(state),locked=!!state.sessionStartedAt;
+ if(max)passageLastLimit=max;
+ $('#passageFree').checked=max===0;$('#passageLimited').checked=max!==0;
+ $('#passageFree').disabled=locked;$('#passageLimited').disabled=locked;
+ $('#passageCountWrap').hidden=max===0;
+ $('#maxBeaconsPerVisit').value=String(max||passageLastLimit||1);$('#maxBeaconsPerVisit').disabled=locked||max===0;
+}
+function passageChooseLimit(free){
+ if(state.sessionStartedAt){passageRenderLimit();return}
+ state.settings.maxBeaconsPerVisit=free?0:Math.min(20,Math.max(1,passageLastLimit||1));save();
+}
+$('#passageFree').onchange=()=>passageChooseLimit(true);
+$('#passageLimited').onchange=()=>passageChooseLimit(false);
 $('#maxBeaconsPerVisit').onchange=()=>{
- if(state.sessionStartedAt){render();return toast('Terminez la séance avant de modifier ce réglage')}
- state.settings.maxBeaconsPerVisit=Number($('#maxBeaconsPerVisit').value);save();
+ if(state.sessionStartedAt){passageRenderLimit();return toast('Terminez la séance avant de modifier ce réglage')}
+ const value=Number($('#maxBeaconsPerVisit').value);
+ if(!Number.isInteger(value)||value<1||value>20){passageRenderLimit();return toast('Choisissez un nombre entier de 1 à 20')}
+ passageLastLimit=value;state.settings.maxBeaconsPerVisit=value;save();
 };
 const passageOldRender=render;
-render=function(){passageOldRender();$('#maxBeaconsPerVisit').value=String(passageCore.maximum(state));$('#maxBeaconsPerVisit').disabled=!!state.sessionStartedAt;const p=passageParticipant();$('#studentMore').hidden=!passageCore.enabled(state)||!p||!passageCore.pending(state,p)||!passageCore.canContinue(state,p)};
+render=function(){passageOldRender();passageRenderLimit();const p=passageParticipant();$('#studentMore').hidden=!passageCore.enabled(state)||!p||!passageCore.pending(state,p)||!passageCore.canContinue(state,p)};
 render();
