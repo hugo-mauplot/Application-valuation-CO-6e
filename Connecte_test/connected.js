@@ -3,6 +3,8 @@ const CO_ENDPOINT='https://uchekzoyzsaxodmltqeg.supabase.co/rest/v1/rpc/co_sync'
 const CO_PUBLIC_KEY='sb_publishable_lpSjwNej0wNLNOpGRWA1PA_DwwJ3CzG';
 const CO_STORE='co-shared-connection-v1';
 let co=JSON.parse(localStorage.getItem(CO_STORE)||'null'),coBaseline=null,coBusy=false,coApplying=false,coError='',coLast=0,coJoining=false,coLaunching=false;
+if(co?.role==='teacher'&&!co.mode){co.mode=app.activeMode;coPersist()}
+function coTeacherModeMatches(connection=co){return connection?.role!=='teacher'||connection.mode===app.activeMode}
 const coLocalSave=save,coLocalSubmit=submitStudentAttempt,coLocalDepart=studentDepart,coLocalAccess=studentAccess;
 const coClone=x=>JSON.parse(JSON.stringify(x)),coEq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 function coPersist(){localStorage.setItem(CO_STORE,JSON.stringify(co))}
@@ -11,7 +13,7 @@ function coClean(profile){let p=coClone(profile);delete p.lastSessionResults;del
 function coDiff(old,current){let ops=[];for(let k of new Set([...Object.keys(old),...Object.keys(current)])){if(['pairs','attempts'].includes(k)){let a=new Map((old[k]||[]).map(x=>[x.id,x])),b=new Map((current[k]||[]).map(x=>[x.id,x]));for(let [id,x] of a)if(!b.has(id))ops.push({field:k,id,delete:true});for(let [id,x] of b){let before=a.get(id);if(!before){ops.push({field:k,id,set:x});continue}let set={},remove=[];for(let f of new Set([...Object.keys(before),...Object.keys(x)])){if(!(f in x))remove.push(f);else if(!coEq(before[f],x[f]))set[f]=x[f]}if(Object.keys(set).length||remove.length)ops.push({field:k,id,set,remove})}}else if(!coEq(old[k],current[k]))ops.push(k in current?{field:k,value:current[k]}:{field:k,delete:true})}return ops}
 function coApply(doc,ops){doc=coClone(doc);for(let op of ops){if(op.id){let a=doc[op.field]||[],idx=a.findIndex(x=>x.id===op.id);if(op.delete){if(idx>=0)a.splice(idx,1)}else{let x=idx>=0?a[idx]:{};for(let k of op.remove||[])delete x[k];Object.assign(x,op.set||{});if(idx>=0)a[idx]=x;else a.push(x)}doc[op.field]=a}else if(op.delete)delete doc[op.field];else doc[op.field]=coClone(op.value)}return doc}
 async function coRpc(data,connection=co){let controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);try{let response=await fetch(data.action==='visit'?CO_ENDPOINT.replace('/co_sync','/co_visit'):CO_ENDPOINT,{method:'POST',headers:{apikey:CO_PUBLIC_KEY,'Content-Type':'application/json'},body:JSON.stringify({request:{...data,session:connection.session,token:connection.token,device:connection.device,deviceName:connection.deviceName}}),signal:controller.signal,cache:'no-store'});let body=await response.json();if(!response.ok)throw Error(body.message||'Connexion refusée');return body}finally{clearTimeout(timer)}}
-function coInstall(response,lateOps=[]){let filter=state.studentCourseFilter||'',retained=state.lastSessionResults,teacherTerrainActive=state.terrainModeActive,tabletSetupPending=state.tabletSetupPending;state=coApply(response.profile,lateOps);state.settings=state.settings||{};if(co.role==='student'){state.studentTerrain=true;state.studentCourseFilter=(state.courses||[]).some(c=>c.id===filter)?filter:'';delete state.settings.teacherPin;state.terrainModeActive=!!response.profile.sessionStartedAt}else{state.studentTerrain=false;state.tabletSetupPending=!!state.sessionStartedAt&&!!tabletSetupPending;state.terrainModeActive=!!state.sessionStartedAt&&!!teacherTerrainActive;if(retained)state.lastSessionResults=retained}app.activeMode=response.mode;stateMode=response.mode;app.profiles[stateMode]=state;coBaseline=coClean(response.profile);coApplying=true;try{coLocalSave(false)}finally{coApplying=false}coLast=Date.now();coError='';coRenderStatus(response.devices);}
+function coInstall(response,lateOps=[]){if(co?.role==='teacher'&&(!coTeacherModeMatches()||response.mode!==app.activeMode))return;let filter=state.studentCourseFilter||'',retained=state.lastSessionResults,teacherTerrainActive=state.terrainModeActive,tabletSetupPending=state.tabletSetupPending;state=coApply(response.profile,lateOps);state.settings=state.settings||{};if(co.role==='student'){state.studentTerrain=true;state.studentCourseFilter=(state.courses||[]).some(c=>c.id===filter)?filter:'';delete state.settings.teacherPin;state.terrainModeActive=!!response.profile.sessionStartedAt}else{state.studentTerrain=false;state.tabletSetupPending=!!state.sessionStartedAt&&!!tabletSetupPending;state.terrainModeActive=!!state.sessionStartedAt&&!!teacherTerrainActive;if(retained)state.lastSessionResults=retained}app.activeMode=response.mode;stateMode=response.mode;app.profiles[stateMode]=state;coBaseline=coClean(response.profile);coApplying=true;try{coLocalSave(false)}finally{coApplying=false}coLast=Date.now();coError='';coRenderStatus(response.devices);}
 function coRenderStatus(devices){let el=document.querySelector('#coStatus');if(!el)return;el.textContent=!co?'Mode local indépendant':coError?'⚠ '+coError:co.outbox?.length?'En attente : '+co.outbox.length+' action(s)':'Synchronisé · '+(co.role==='teacher'?'Centre enseignant':'Borne élève');if(co?.role==='teacher'&&devices){document.querySelector('#coDevices').textContent=devices.map(d=>d.name+' : '+(Date.now()-new Date(d.seenAt)<15000?'connectée':'sans nouvelles')).join(' · ')}}
 function coCanShareCurrentSession(){
  return co?.role==='teacher'&&!!state.sessionStartedAt&&state.studentTabletsEnabled===true&&co.startedAt===state.sessionStartedAt&&(!co.mode||co.mode===app.activeMode)&&!!co.studentToken;
@@ -32,8 +34,8 @@ function coUpdateToolbar(){
  coRenderStatus();coRenderLaunchChoices();
 }
 async function coTick(){
- if(!co||coBusy||coJoining||coLaunching||document.hidden)return;
- const connection=co,stillCurrent=()=>co===connection&&!coJoining&&!coLaunching;
+ if(!co||coBusy||coJoining||coLaunching||document.hidden||!coTeacherModeMatches())return;
+ const connection=co,requestMode=app.activeMode,stillCurrent=()=>co===connection&&!coJoining&&!coLaunching&&coTeacherModeMatches(connection)&&app.activeMode===requestMode;
  coBusy=true;
  try{
   if(connection.role==='teacher'){
@@ -60,7 +62,7 @@ async function coTick(){
  }catch(error){if(stillCurrent()){coError=error.name==='AbortError'?'Connexion lente · données conservées':error.message;coRenderStatus();renderStudentStation();toast(coError)}}
  finally{coBusy=false;coUpdateToolbar()}
 }
-save=function(recordUndo=true){coLocalSave(recordUndo);if(co?.role==='teacher'&&!coApplying){co.pendingOps=coBaseline?coDiff(coBaseline,coClean(state)):(co.pendingOps||[]);coPersist();coTick()}};
+save=function(recordUndo=true){coLocalSave(recordUndo);if(co?.role==='teacher'&&!coApplying&&coTeacherModeMatches()){co.pendingOps=coBaseline?coDiff(coBaseline,coClean(state)):(co.pendingOps||[]);coPersist();coTick()}};
 function coRenderLaunchChoices(){
  coRefreshShareButton();
  const students=document.querySelector('#sessionDevicesStudents'),teacher=document.querySelector('#sessionDevicesTeacher');
