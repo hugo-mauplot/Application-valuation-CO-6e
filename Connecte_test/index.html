@@ -434,9 +434,55 @@
 #view-pairs .inline-exam-fields .penalty-target>label{font-size:9px!important}
 #view-pairs .inline-exam-fields .penalty-target select{font-size:11px!important;padding:3px!important}
 }
+
+/* Version 33 : titre et sauvegarde, puis deux lignes de paramètres. */
+#view-pairs .inline-exam-header{display:flex!important;align-items:center;justify-content:space-between;gap:8px}
+#view-pairs .inline-exam-title{flex:1;min-width:0}
+#view-pairs #saveEvaluationTemplate{width:auto!important;max-width:55%!important;flex:0 1 auto;min-height:28px!important;padding:4px 7px!important;font-size:10px!important;line-height:1.15!important}
+#view-pairs .inline-exam-fields{display:grid!important;grid-template-columns:minmax(62px,.65fr) minmax(190px,1.55fr) minmax(155px,1.65fr);gap:6px!important;align-items:end}
+#view-pairs .inline-exam-fields>.inline-duration{display:block!important;grid-column:1!important;grid-row:1!important;min-width:0}
+#view-pairs .inline-exam-fields>.inline-duration>label,#view-pairs .inline-exam-fields>#examScaleWrap>label{display:block!important;margin:0 0 3px!important}
+#view-pairs .inline-exam-fields>.passage-settings{display:block!important;grid-column:2!important;grid-row:1!important;min-width:0!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important}
+#view-pairs .inline-exam-fields>.passage-settings legend{float:none!important;max-width:none!important;margin:0 0 3px!important;white-space:nowrap}
+#view-pairs .inline-exam-fields .passage-limit-row{display:flex!important;gap:4px!important;justify-content:flex-start!important;height:29px}
+#view-pairs .inline-exam-fields>#examScaleWrap{display:block!important;grid-column:3!important;grid-row:1!important;min-width:0}
+#view-pairs .inline-exam-fields #sixthExamSettings{display:flex!important;flex-wrap:nowrap!important;align-items:end!important;grid-column:1/-1!important;gap:6px!important}
+#view-pairs .inline-exam-fields .exam-primary-row{display:contents!important}
+#view-pairs .inline-exam-fields .exam-primary-row>.penalty-toggle{flex:0 1 135px;min-width:0;min-height:29px!important;padding:3px 5px!important;align-self:end;white-space:normal}
+#view-pairs .inline-exam-fields .penalty-options,#view-pairs .inline-exam-fields .penalty-options>.grid{display:contents!important}
+#view-pairs .inline-exam-fields .penalty-target{display:block!important;flex:1.3;min-width:0!important}
+#view-pairs .inline-exam-fields .penalty-target>label{margin:0 0 3px!important}
+#view-pairs .inline-exam-fields .inline-penalty-number{display:block!important;flex:1;min-width:0!important}
+#view-pairs .inline-exam-fields .inline-penalty-number>label{min-height:0!important;margin:0 0 3px!important;white-space:nowrap}
+#view-pairs .inline-exam-fields .inline-penalty-number input{width:100%!important;min-width:0!important}
+#view-pairs .inline-exam-fields #thirdExamSettings{grid-column:1/-1}
+body.third-mode #view-pairs .inline-exam-fields>.inline-duration,body.third-mode #view-pairs .inline-exam-fields>#examScaleWrap{display:none!important}
+body.third-mode #view-pairs .inline-exam-fields>.passage-settings{grid-column:1/-1!important}
+#view-pairs .inline-exam-fields [hidden]{display:none!important}
+@media(max-width:430px){
+#view-pairs .live-exam-banner.inline-exam{padding:7px!important}
+#view-pairs .inline-exam-header{gap:5px}
+#view-pairs .inline-exam-title{font-size:11px!important}
+#view-pairs #saveEvaluationTemplate{max-width:54%!important;font-size:9px!important;padding:3px 5px!important;gap:4px!important}
+#view-pairs .inline-exam-fields{grid-template-columns:44px minmax(139px,1.4fr) minmax(80px,1fr)!important;gap:5px!important}
+#view-pairs .inline-exam-fields label,#view-pairs .inline-exam-fields legend{font-size:9px!important}
+#view-pairs .inline-exam-fields>.passage-settings legend{font-size:9px!important;max-width:none!important}
+#view-pairs .inline-exam-fields .passage-limit-row{gap:2px!important}
+#view-pairs .inline-exam-fields .passage-limit-choice{padding:3px!important;font-size:9px!important;gap:2px!important}
+#view-pairs .inline-exam-fields #maxBeaconsPerVisit{width:32px!important;padding:3px!important}
+#view-pairs .inline-exam-fields #examScaleWrap .exam-scale-line{gap:2px!important}
+#view-pairs .inline-exam-fields #examScaleWrap button{width:23px!important;min-width:23px!important;padding:2px!important;font-size:0!important}
+#view-pairs .inline-exam-fields #examScaleWrap button::before{content:'ⓘ';font-size:14px}
+#view-pairs .inline-exam-fields input:not([type=checkbox]):not([type=radio]),#view-pairs .inline-exam-fields select{font-size:11px!important;padding:3px!important}
+#view-pairs .inline-exam-fields #sixthExamSettings{gap:4px!important}
+#view-pairs .inline-exam-fields .exam-primary-row>.penalty-toggle{flex:0 0 66px;padding:3px!important;gap:3px!important;font-size:9px!important;line-height:1.1!important}
+#view-pairs .inline-exam-fields .penalty-target{flex:1.15}
+#view-pairs .inline-exam-fields .inline-penalty-number>label{font-size:8px!important;letter-spacing:-.2px;white-space:normal;min-height:19px!important;display:flex;align-items:end}
+#view-pairs .inline-exam-fields .penalty-target>label{min-height:19px!important;display:flex;align-items:end}
+}
 </style></head>
 <body>
-<header><h1>Course d’orientation 6e</h1><small id="saveStatus">Sauvegarde locale sécurisée</small><small class="app-build">VERSION CONNECTÉE 2026.11.15.32 — TEST</small><span id="modeBadge" class="mode-badge">MODE ÉVALUATION</span></header>
+<header><h1>Course d’orientation 6e</h1><small id="saveStatus">Sauvegarde locale sécurisée</small><small class="app-build">VERSION CONNECTÉE 2026.11.15.33 — TEST</small><span id="modeBadge" class="mode-badge">MODE ÉVALUATION</span></header>
 <main>
   <section id="view-home" class="view active"><div class="home-hero"><span class="home-kicker">EPS - Course d’orientation</span><h2>Organisation course d’orientation</h2><p>Préparez les parcours, lancez les chronomètres et suivez les résultats directement sur le terrain.</p><div class="compass" aria-hidden="true"></div></div><div class="card tutorial"><h3>Comment utiliser l’application ?</h3><div class="tutorial-step"><b>Préparez les balises et les parcours</b><span>Inventoriez les balises du collège, créez les parcours, puis associez les numéros de la carte aux balises physiques.</span></div><div class="tutorial-step"><b>Réglez la séance</b><span>Définissez la durée et les paramètres de l’épreuve, puis enregistrez une configuration réutilisable si nécessaire.</span></div><div class="tutorial-step"><b>Ajoutez les participants</b><span>Choisissez Individuel, Duo ou Trio, sélectionnez les élèves et attribuez leur parcours.</span></div><div class="tutorial-step"><b>Suivez la séance</b><span>Déclenchez le début de l’épreuve, enregistrez chaque tentative au retour, puis donnez le départ suivant.</span></div><button type="button" id="openDetailedTutorial" class="detailed-tutorial-button">Voir le tutoriel détaillé</button></div></section>
   <section id="view-live" class="view"><h2 class="page-heading"><span>Terrain</span><small>Saisir les balises rapportées et contrôler les tentatives</small></h2><button type="button" id="terrainPrelaunchMessage" class="terrain-prelaunch-message" onclick="state.sessionStartedAt?toggleSessionStart():activateView('pairs')"><b>Configurer puis lancer la séance</b><span>Ouvrir Configuration de la séance</span></button><div id="terrainActiveBanner" class="terrain-active-banner" hidden><div><b>Mode terrain actif</b><span id="terrainActiveSummary">Séance en cours</span></div></div><div id="terrainDashboard" hidden><button type="button" id="exitTerrainMode" class="terrain-close-button" aria-label="Quitter le mode terrain" title="Quitter le mode terrain">×</button><div id="studentStation" hidden></div><div id="terrainBulkActions" class="terrain-bulk-actions"></div><div class="terrain-dashboard-tools"><div class="terrain-search"><span>⌕</span><input id="terrainParticipantSearch" type="search" placeholder="Rechercher un élève…" autocomplete="off"></div><div class="terrain-filter-buttons"><button type="button" data-terrain-filter="all" class="active">Tous</button><button type="button" data-terrain-filter="running">En course</button><button type="button" data-terrain-filter="finished">Terminés</button></div><div class="terrain-course-row"><select id="terrainCourseFilter"><option value="">Tous les parcours</option></select><button type="button" id="terrainCorrectionsPdf" class="terrain-corrections-pdf" onclick="downloadAllCorrectionsPdf()" title="Ouvrir la correction générale imprimable" aria-label="Ouvrir la correction générale imprimable">▦ <span>Correction PDF</span></button></div></div><div id="terrainSafetyPanel" class="card terrain-safety-panel"><h3>Sécurité</h3></div><div id="terrainParticipantCards" class="terrain-participant-cards"></div><div class="card terrain-recent-card"><h3>Dernières tentatives</h3><div id="terrainRecentAttempts"></div></div><div class="terrain-session-actions terrain-session-actions-single"><button type="button" id="finishTerrainSession" class="danger">■ Fin de séance</button></div></div>
@@ -506,7 +552,7 @@
 <div id="toast" class="toast"></div>
 <script src="vendor/jspdf.umd.min.js"></script>
 <script src="vendor/jspdf.plugin.autotable.min.js"></script>
-<script src="passages-core.js?v=2026.11.15.32"></script>
+<script src="passages-core.js?v=2026.11.15.33"></script>
 <script>
 const KEY='co6e-connected-v1',BACKUP_KEY='co6e-connected-v1-backup',PENDING_KEY='co6e-connected-v1-pending',UNDO_KEY='co6e-connected-v1-undo';
 const initialMatrix={0:[0,0,0,0,0],1:[5.5,4.5,3,1,.5],2:[6.5,5.5,4,2,1],3:[7.5,6.5,5,3,2],4:[8.5,7.5,6,4,3],5:[9.5,8.5,7,5,3.5],6:[10.5,9.5,8,6,4],7:[11.5,10.5,9,7,5],8:[12.5,11.5,10,8,6],9:[13.5,12.5,11,9,7],10:[14.5,13.5,12,10,8],11:[15.5,14.5,13,11,8.5],12:[16.5,15.5,14,12,9.5],13:[17,16,14.5,12.5,10],14:[17.5,16.5,15,13,10.5],15:[18,17,15.5,13.5,11],16:[18.5,17.5,16,14,11.5],17:[19.5,18.5,17,15,12.5],18:[20,19,17.5,15.5,13]};
@@ -743,13 +789,14 @@ function setupConfigurationPresentation(){
  if(banner&&settings){
   const header=document.createElement('div');header.className='inline-exam-header';
   const title=document.createElement('b');title.className='inline-exam-title';title.textContent='Paramètres de l’épreuve';header.append(title);
-  const save=root.querySelector('#saveEvaluationTemplate');save.textContent='Enregistrer comme configuration d’évaluation';const footer=document.createElement('div');footer.className='inline-exam-footer';footer.append(save);
-  banner.append(header,settings,footer);banner.classList.add('inline-exam');banner.setAttribute('aria-label','Paramètres de l’épreuve');
+  const save=root.querySelector('#saveEvaluationTemplate');save.textContent='Enregistrer comme configuration d’évaluation';const footer=document.createElement('div');footer.className='inline-exam-footer';header.append(save);
+  banner.append(header,settings);banner.classList.add('inline-exam');banner.setAttribute('aria-label','Paramètres de l’épreuve');
   settings.classList.add('inline-exam-fields');settings.setAttribute('role','group');settings.setAttribute('aria-label','Réglages de l’épreuve');
-  document.querySelector('#duration').parentElement.classList.add('inline-duration');
-  const captions={duration:'Durée (min)',lateStep:'−1 pt toutes les (min)',lateThreshold:'Maximum dès (min)',lateMax:'Pénalité max.',penaltyTarget:'Pénalité sur',examScaleSelect:'Barème appliqué'};
+  const durationField=document.querySelector('#duration').parentElement;durationField.classList.add('inline-duration');
+  settings.prepend(durationField);settings.querySelector('.passage-settings').after(document.querySelector('#examScaleWrap'));
+  const captions={duration:'Durée (min)',lateStep:'−1 pt / min',lateThreshold:'Max. dès (min)',lateMax:'Maximum',penaltyTarget:'Sur',examScaleSelect:'Barème'};
   Object.entries(captions).forEach(([id,text])=>{const input=document.getElementById(id),label=input.closest('#examScaleWrap')?.querySelector('label')||input.parentElement.querySelector('label');if(label){label.title=label.textContent;label.textContent=text;label.htmlFor=id}});
-  const passageLegend=settings.querySelector('.passage-settings legend');passageLegend.title=passageLegend.textContent;passageLegend.textContent='Balises par passage (maximum)';
+  const passageLegend=settings.querySelector('.passage-settings legend');passageLegend.title=passageLegend.textContent;passageLegend.textContent='Balises / passage (max.)';
   document.querySelector('#penaltyEnabled').nextElementSibling.textContent='Pénalités de retard';
   ['lateStep','lateThreshold','lateMax'].forEach(id=>document.getElementById(id).parentElement.classList.add('inline-penalty-number'));
   settings.querySelectorAll('label').forEach(label=>{if(!label.htmlFor&&!label.querySelector('input,select')){const input=label.parentElement.querySelector('input,select');if(input?.id)label.htmlFor=input.id}});
@@ -997,6 +1044,6 @@ setInterval(()=>{document.querySelectorAll('[data-chrono]').forEach(el=>{let p=s
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
   </script>
 <script src="vendor/qr-local.js"></script>
-<script src="connected.js?v=2026.11.15.32"></script>
-<script src="passages.js?v=2026.11.15.32"></script>
+<script src="connected.js?v=2026.11.15.33"></script>
+<script src="passages.js?v=2026.11.15.33"></script>
 </body></html>
