@@ -1,5 +1,5 @@
-const CACHE='orientation-co-connected-v26';
-const ASSETS=['./','./passages-core.js?v=2026.11.15.33','./passages.js?v=2026.11.15.33','./index.html','./connected.js?v=2026.11.15.33','./vendor/qr-local.js','./vendor/jspdf.umd.min.js','./vendor/jspdf.plugin.autotable.min.js','./manifest.webmanifest','./icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png',];
+const CACHE='orientation-co-connected-v27';
+const ASSETS=['./','./passages-core.js?v=2026.11.15.34','./passages.js?v=2026.11.15.34','./index.html','./connected.js?v=2026.11.15.34','./vendor/qr-local.js','./vendor/jspdf.umd.min.js','./vendor/jspdf.plugin.autotable.min.js','./manifest.webmanifest','./icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png',];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('orientation-co-connected-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
