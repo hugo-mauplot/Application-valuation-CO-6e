@@ -1,5 +1,5 @@
-const CACHE='orientation-co-connected-v48';
-const ASSETS=['./','./passages-core.js?v=2026.11.16.53','./passages.js?v=2026.11.16.53','./student-beacon-overview.js?v=2026.11.16.53','./result-pdf.js?v=2026.11.16.53','./index.html','./connected.js?v=2026.11.16.53','./vendor/qr-local.js','./vendor/jspdf.umd.min.js','./vendor/jspdf.plugin.autotable.min.js','./manifest.webmanifest','./icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png',];
+const CACHE='orientation-co-connected-v49';
+const ASSETS=['./','./passages-core.js?v=2026.11.16.54','./passages.js?v=2026.11.16.54','./student-beacon-overview.js?v=2026.11.16.54','./result-pdf.js?v=2026.11.16.54','./archive-pdf.js?v=2026.11.16.54','./index.html','./connected.js?v=2026.11.16.54','./vendor/qr-local.js','./vendor/jspdf.umd.min.js','./vendor/jspdf.plugin.autotable.min.js','./manifest.webmanifest','./icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png',];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('orientation-co-connected-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
@@ -8,5 +8,5 @@ self.addEventListener('fetch',event=>{
     const copy=response.clone();
     caches.open(CACHE).then(cache=>cache.put(event.request,copy));
     return response;
-  }).catch(()=>caches.match(event.request).then(hit=>hit||caches.match('./result-pdf.js?v=2026.11.16.53','./index.html'))));
+  }).catch(()=>caches.match(event.request).then(hit=>hit||caches.match('./result-pdf.js?v=2026.11.16.54','./archive-pdf.js?v=2026.11.16.54','./index.html'))));
 });
