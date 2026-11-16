@@ -623,20 +623,22 @@ body>nav{position:fixed!important;top:auto!important;right:8px!important;bottom:
 @media(max-width:430px){body>nav{left:6px!important;right:6px!important;bottom:calc(6px + env(safe-area-inset-bottom,0px))!important;width:calc(100% - 12px)!important}}
 
 /* Récapitulatif discret, à côté du numéro de balise élève. */
-#studentCodeDialog .student-beacon-overview-line{display:grid;grid-template-columns:minmax(75px,.7fr) minmax(0,1.6fr);align-items:center;gap:12px;margin:5px 0 9px}
-#studentCodeDialog .student-beacon-overview{min-width:0;padding:8px;background:#f5f7f6;border:1px solid #dce3df;border-radius:10px}
-#studentCodeDialog .student-beacon-overview[hidden]{display:none!important}
-#studentCodeDialog .student-beacon-overview-count{margin-bottom:5px;font-size:10px;font-weight:700;color:#52655b;line-height:1.3}
-#studentCodeDialog .student-beacon-overview-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px}
-#studentCodeDialog .student-beacon-status{display:grid;place-items:center;min-width:0;min-height:25px;padding:2px 1px;border:1px solid #bdc9c2;border-radius:4px;background:#fff;color:#48574f;font-size:10px;font-weight:750;font-variant-numeric:tabular-nums;line-height:1.1}
-#studentCodeDialog .student-beacon-status.found{background:#bce7c9;border-color:#72b88a;color:#175c32}
-#studentCodeDialog .student-beacon-status.error{background:#f4bfc5;border-color:#d9838d;color:#8b2430}
-#studentCodeDialog .student-beacon-status[aria-current=true]{outline:2px solid #3a6453;outline-offset:0}
-#studentCodeDialog .student-beacon-overview-legend{margin-top:5px;font-size:9px;line-height:1.35;color:#68796f}
-@media(max-width:380px){#studentCodeDialog .student-beacon-overview-line{grid-template-columns:65px minmax(0,1fr);gap:8px}#studentCodeDialog #studentBeaconLarge{font-size:64px!important}#studentCodeDialog .student-beacon-overview{padding:6px}}
+:is(#studentCodeDialog,#studentDestinationDialog) .student-beacon-overview-line{display:grid;grid-template-columns:minmax(75px,.7fr) minmax(0,1.6fr);align-items:center;gap:12px;margin:5px 0 9px}
+:is(#studentCodeDialog,#studentDestinationDialog) .student-beacon-overview{min-width:0;padding:8px;background:#f5f7f6;border:1px solid #dce3df;border-radius:10px}
+:is(#studentCodeDialog,#studentDestinationDialog) .student-beacon-overview[hidden]{display:none!important}
+:is(#studentCodeDialog,#studentDestinationDialog) .student-beacon-overview-count{margin-bottom:5px;font-size:10px;font-weight:700;color:#52655b;line-height:1.3}
+:is(#studentCodeDialog,#studentDestinationDialog) .student-beacon-overview-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px}
+:is(#studentCodeDialog,#studentDestinationDialog) .student-beacon-status{display:grid;place-items:center;min-width:0;min-height:25px;padding:2px 1px;border:1px solid #bdc9c2;border-radius:4px;background:#fff;color:#48574f;font-size:10px;font-weight:750;font-variant-numeric:tabular-nums;line-height:1.1}
+:is(#studentCodeDialog,#studentDestinationDialog) .student-beacon-status.found{background:#bce7c9;border-color:#72b88a;color:#175c32}
+:is(#studentCodeDialog,#studentDestinationDialog) .student-beacon-status.error{background:#f4bfc5;border-color:#d9838d;color:#8b2430}
+:is(#studentCodeDialog,#studentDestinationDialog) .student-beacon-status[aria-current=true]{outline:2px solid #3a6453;outline-offset:0}
+:is(#studentCodeDialog,#studentDestinationDialog) .student-beacon-overview-legend{margin-top:5px;font-size:9px;line-height:1.35;color:#68796f}
+@media(max-width:380px){:is(#studentCodeDialog,#studentDestinationDialog) .student-beacon-overview-line{grid-template-columns:65px minmax(0,1fr);gap:8px}#studentCodeDialog #studentBeaconLarge{font-size:64px!important}:is(#studentCodeDialog,#studentDestinationDialog) .student-beacon-overview{padding:6px}}
+
+#studentDestinationDialog .student-beacon-overview{max-width:320px;margin:0 auto 12px;text-align:left}
 </style></head>
 <body>
-<header><h1>Course d’orientation 6e</h1><small id="saveStatus">Sauvegarde locale sécurisée</small><small class="app-build">VERSION CONNECTÉE 2026.11.16.49 — TEST</small><span id="modeBadge" class="mode-badge">MODE ÉVALUATION</span></header>
+<header><h1>Course d’orientation 6e</h1><small id="saveStatus">Sauvegarde locale sécurisée</small><small class="app-build">VERSION CONNECTÉE 2026.11.16.50 — TEST</small><span id="modeBadge" class="mode-badge">MODE ÉVALUATION</span></header>
 <main>
   <section id="view-home" class="view active"><div class="home-hero"><span class="home-kicker">EPS - Course d’orientation</span><h2>Organisation course d’orientation</h2><p>Préparez les parcours, lancez les chronomètres et suivez les résultats directement sur le terrain.</p><div class="compass" aria-hidden="true"></div></div><div class="card tutorial"><h3>Comment utiliser l’application ?</h3><div class="tutorial-step"><b>Préparez les balises et les parcours</b><span>Inventoriez les balises du collège, créez les parcours, puis associez les numéros de la carte aux balises physiques.</span></div><div class="tutorial-step"><b>Réglez la séance</b><span>Définissez la durée et les paramètres de l’épreuve, puis enregistrez une configuration réutilisable si nécessaire.</span></div><div class="tutorial-step"><b>Ajoutez les participants</b><span>Choisissez Individuel, Duo ou Trio, sélectionnez les élèves et attribuez leur parcours.</span></div><div class="tutorial-step"><b>Suivez la séance</b><span>Déclenchez le début de l’épreuve, enregistrez chaque tentative au retour, puis donnez le départ suivant.</span></div><button type="button" id="openDetailedTutorial" class="detailed-tutorial-button">Voir le tutoriel détaillé</button></div></section>
   <section id="view-live" class="view"><h2 class="page-heading"><span>Terrain</span><small>Saisir les balises rapportées et contrôler les tentatives</small></h2><button type="button" id="terrainPrelaunchMessage" class="terrain-prelaunch-message" onclick="state.sessionStartedAt?toggleSessionStart():activateView('pairs')"><b>Configurer puis lancer la séance</b><span>Ouvrir Configuration de la séance</span></button><div id="terrainActiveBanner" class="terrain-active-banner" hidden><div><b>Mode terrain actif</b><span id="terrainActiveSummary">Séance en cours</span></div></div><div id="terrainDashboard" hidden><button type="button" id="exitTerrainMode" class="terrain-close-button" aria-label="Quitter le mode terrain" title="Quitter le mode terrain">×</button><div id="studentStation" hidden></div><div id="terrainBulkActions" class="terrain-bulk-actions"></div><div class="terrain-dashboard-tools"><div class="terrain-search"><span>⌕</span><input id="terrainParticipantSearch" type="search" placeholder="Rechercher un élève…" autocomplete="off"></div><div class="terrain-filter-buttons"><button type="button" data-terrain-filter="all" class="active">Tous</button><button type="button" data-terrain-filter="running">En course</button><button type="button" data-terrain-filter="finished">Terminés</button></div><div class="terrain-course-row"><select id="terrainCourseFilter"><option value="">Tous les parcours</option></select><button type="button" id="terrainCorrectionsPdf" class="terrain-corrections-pdf" onclick="downloadAllCorrectionsPdf()" title="Ouvrir la correction générale imprimable" aria-label="Ouvrir la correction générale imprimable">▦ <span>Correction PDF</span></button></div></div><div id="terrainSafetyPanel" class="card terrain-safety-panel"><h3>Sécurité</h3></div><div id="terrainParticipantCards" class="terrain-participant-cards"></div><div class="card terrain-recent-card"><h3>Dernières tentatives</h3><div id="terrainRecentAttempts"></div></div><div class="terrain-session-actions terrain-session-actions-single"><button type="button" id="finishTerrainSession" class="danger">■ Fin de séance</button></div></div>
@@ -706,7 +708,7 @@ body>nav{position:fixed!important;top:auto!important;right:8px!important;bottom:
 <div id="toast" class="toast"></div>
 <script src="vendor/jspdf.umd.min.js"></script>
 <script src="vendor/jspdf.plugin.autotable.min.js"></script>
-<script src="passages-core.js?v=2026.11.16.49"></script>
+<script src="passages-core.js?v=2026.11.16.50"></script>
 <script>
 const KEY='co6e-connected-v1',BACKUP_KEY='co6e-connected-v1-backup',PENDING_KEY='co6e-connected-v1-pending',UNDO_KEY='co6e-connected-v1-undo';
 const initialMatrix={0:[0,0,0,0,0],1:[5.5,4.5,3,1,.5],2:[6.5,5.5,4,2,1],3:[7.5,6.5,5,3,2],4:[8.5,7.5,6,4,3],5:[9.5,8.5,7,5,3.5],6:[10.5,9.5,8,6,4],7:[11.5,10.5,9,7,5],8:[12.5,11.5,10,8,6],9:[13.5,12.5,11,9,7],10:[14.5,13.5,12,10,8],11:[15.5,14.5,13,11,8.5],12:[16.5,15.5,14,12,9.5],13:[17,16,14.5,12.5,10],14:[17.5,16.5,15,13,10.5],15:[18,17,15.5,13.5,11],16:[18.5,17.5,16,14,11.5],17:[19.5,18.5,17,15,12.5],18:[20,19,17.5,15.5,13]};
@@ -1221,7 +1223,7 @@ setInterval(()=>{document.querySelectorAll('[data-chrono]').forEach(el=>{let p=s
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
   </script>
 <script src="vendor/qr-local.js"></script>
-<script src="connected.js?v=2026.11.16.49"></script>
-<script src="passages.js?v=2026.11.16.49"></script>
-<script src="student-beacon-overview.js?v=2026.11.16.49"></script>
+<script src="connected.js?v=2026.11.16.50"></script>
+<script src="passages.js?v=2026.11.16.50"></script>
+<script src="student-beacon-overview.js?v=2026.11.16.50"></script>
 </body></html>
