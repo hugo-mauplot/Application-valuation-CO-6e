@@ -1,5 +1,5 @@
-const CACHE='orientation-co-connected-v57';
-const ASSETS=['./','./passages-core.js?v=2026.11.18.62','./passages.js?v=2026.11.18.62','./student-beacon-overview.js?v=2026.11.18.62','./result-pdf.js?v=2026.11.18.62','./archive-pdf.js?v=2026.11.18.62','./teacher-beacon-overview.js?v=2026.11.18.62','./index.html','./connected.js?v=2026.11.18.62','./vendor/qr-local.js','./vendor/jspdf.umd.min.js','./vendor/jspdf.plugin.autotable.min.js','./manifest.webmanifest','./icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png',];
+const CACHE='orientation-co-connected-v58';
+const ASSETS=['./','./passages-core.js?v=2026.11.19.63','./passages.js?v=2026.11.19.63','./student-beacon-overview.js?v=2026.11.19.63','./result-pdf.js?v=2026.11.19.63','./archive-pdf.js?v=2026.11.19.63','./teacher-beacon-overview.js?v=2026.11.19.63','./index.html','./connected.js?v=2026.11.19.63','./vendor/qr-local.js','./vendor/jspdf.umd.min.js','./vendor/jspdf.plugin.autotable.min.js','./manifest.webmanifest','./icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png',];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('orientation-co-connected-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
@@ -8,5 +8,5 @@ self.addEventListener('fetch',event=>{
     const copy=response.clone();
     caches.open(CACHE).then(cache=>cache.put(event.request,copy));
     return response;
-  }).catch(()=>caches.match(event.request).then(hit=>hit||caches.match('./result-pdf.js?v=2026.11.18.62','./archive-pdf.js?v=2026.11.18.62','./teacher-beacon-overview.js?v=2026.11.18.62','./index.html'))));
+  }).catch(()=>caches.match(event.request).then(hit=>hit||caches.match('./result-pdf.js?v=2026.11.19.63','./archive-pdf.js?v=2026.11.19.63','./teacher-beacon-overview.js?v=2026.11.19.63','./index.html'))));
 });
