@@ -43,11 +43,13 @@ submitStudentAttempt=function(skip=false){
  passageSend(passageEvent(skip?'skip':'answer',studentBeaconId,studentDigits));
 };
 studentDepart=function(retry){
+ const ended=passageParticipant();if(ended?.endAt||ended?.end){$('#studentFeedbackDialog').close();renderStudentStation();return}
  if(!passageCore.enabled(state))return passageOldDepart(retry);
  passageSend({...passageEvent('depart'),retry:!!retry});
 };
 function passageFeedback(event,response){
  const p=state.pairs.find(p=>p.id===event.pair)||passageParticipant();if(!p)return;studentPairId=p.id;
+ if(typeof showAutomaticCompletionFeedback==='function'&&showAutomaticCompletionFeedback(p))return;
  if(event.command==='continue')return passageOpenCode();
  $('#studentCodeDialog').close();
  if(event.command==='depart'){
